@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Karthick — Full Stack Developer Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8A6E30;
+    --bg: #0A0C10;
+    --bg2: #0F1117;
+    --bg3: #141820;
+    --card: #161B25;
+    --border: rgba(201,168,76,0.18);
+    --text: #E8E4D9;
+    --muted: #7A7A8A;
+    --white: #FFFFFF;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(10,12,16,0.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-btn {
+    padding: 8px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; border: none; background: transparent; color: var(--muted);
+    transition: color 0.2s, background 0.2s; letter-spacing: 0.03em;
+  }
+  .nav-btn:hover, .nav-btn.active { color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding-top: 64px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ═══════════════════════════
+     HOME PAGE
+  ═══════════════════════════ */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 60% 40%, rgba(201,168,76,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 10% 80%, rgba(100,80,200,0.05) 0%, transparent 60%);
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+    max-width: 1100px; width: 100%; padding: 60px 48px; position: relative; z-index: 1;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+    color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+  .hero-name {
+    font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 900; line-height: 1.05; color: var(--white);
+    margin-bottom: 12px;
+  }
+  .hero-name span { color: var(--gold); }
+  .hero-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+    color: var(--muted); margin-bottom: 24px; letter-spacing: 0.05em;
+  }
+  .hero-desc { font-size: 1rem; color: var(--muted); line-height: 1.75; margin-bottom: 36px; }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 12px 28px; background: var(--gold); color: #0A0C10;
+    border: none; border-radius: 6px; font-weight: 700; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s, transform 0.15s; letter-spacing: 0.03em;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    padding: 12px 28px; background: transparent; color: var(--gold);
+    border: 1.5px solid var(--gold); border-radius: 6px; font-weight: 600; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s; letter-spacing: 0.03em;
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.1); }
+
+  /* Avatar / project preview panel */
+  .hero-visual {
+    position: relative; display: flex; flex-direction: column; gap: 14px;
+  }
+  .hero-preview-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+    transform: perspective(600px) rotateY(-4deg) rotateX(2deg);
+  }
+  .hero-preview-card img { width: 100%; display: block; }
+  .hero-badge {
+    position: absolute; bottom: -10px; right: -10px;
+    background: var(--gold); color: #0A0C10; border-radius: 8px;
+    padding: 10px 16px; font-weight: 700; font-size: 0.8rem;
+    box-shadow: 0 8px 20px rgba(201,168,76,0.35);
+  }
+
+  /* Stats */
+  .stats-row {
+    display: flex; gap: 0; border-top: 1px solid var(--border);
+    margin-top: 36px;
+  }
+  .stat { flex: 1; padding: 28px 24px; border-right: 1px solid var(--border); }
+  .stat:last-child { border-right: none; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--gold); }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* Skills section */
+  .section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    color: var(--gold); letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 700; color: var(--white); margin-bottom: 48px;
+  }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .skill-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px 28px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .skill-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+  .skill-card-title {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2);
+    color: var(--text); border-radius: 4px; padding: 4px 10px;
+    font-size: 0.78rem; font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Services */
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .service-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 28px 24px; display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .service-card:hover { border-color: var(--gold-dim); }
+  .service-icon { font-size: 1.6rem; }
+  .service-name { font-weight: 600; font-size: 0.95rem; color: var(--white); }
+  .service-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* ═══════════════════════════
+     SCREENSHOTS PAGE
+  ═══════════════════════════ */
+  .ss-page { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+  .ss-intro { margin-bottom: 52px; }
+  .ss-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+  .ss-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .ss-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .ss-img-wrap { position: relative; overflow: hidden; }
+  .ss-img-wrap img { width: 100%; display: block; transition: transform 0.4s; aspect-ratio: 16/9; object-fit: cover; }
+  .ss-card:hover .ss-img-wrap img { transform: scale(1.04); }
+  .ss-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+  }
+  .ss-card:hover .ss-overlay { background: rgba(0,0,0,0.45); }
+  .ss-zoom { opacity: 0; transition: opacity 0.3s; font-size: 2rem; }
+  .ss-card:hover .ss-zoom { opacity: 1; }
+  .ss-info { padding: 16px 20px; }
+  .ss-label { font-size: 0.7rem; color: var(--gold); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .ss-title { font-size: 0.92rem; color: var(--text); }
+
+  /* Lightbox */
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 8px; box-shadow: 0 32px 80px rgba(0,0,0,0.8); }
+  .lightbox-close {
+    position: absolute; top: 24px; right: 32px; font-size: 2rem;
+    color: var(--text); cursor: pointer; background: none; border: none; line-height: 1;
+  }
+  .lightbox-close:hover { color: var(--gold); }
+  .lightbox-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.08); border: 1px solid var(--border);
+    color: var(--text); font-size: 1.5rem; width: 48px; height: 48px;
+    border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .lightbox-nav:hover { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .lightbox-prev { left: 24px; }
+  .lightbox-next { right: 24px; }
+
+  /* ═══════════════════════════
+     VIDEO PAGE
+  ═══════════════════════════ */
+  .video-page { padding: 80px 48px; max-width: 960px; margin: 0 auto; }
+  .video-wrapper {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; margin-bottom: 36px; box-shadow: 0 32px 64px rgba(0,0,0,0.5);
+  }
+  .video-wrapper video { width: 100%; display: block; }
+  .feature-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 36px; }
+  .feature-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 18px 20px; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .feature-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-top: 6px; flex-shrink: 0; }
+  .feature-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+  .feature-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+  /* Available banner */
+  .available-banner {
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.05));
+    border: 1px solid var(--gold);
+    border-radius: 12px; padding: 28px 36px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; margin-top: 48px;
+  }
+  .avail-left { display: flex; align-items: center; gap: 14px; }
+  .avail-dot { width: 12px; height: 12px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.5); flex-shrink: 0; }
+  .avail-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--white); }
+  .avail-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { gap: 2px; }
+    .nav-btn { padding: 6px 10px; font-size: 0.78rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px; }
+    .hero-visual { display: none; }
+    .section, .ss-page, .video-page { padding: 60px 20px; }
+    .stats-row { flex-wrap: wrap; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">K.</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home', this)">Home</button>
+    <button class="nav-btn" onclick="showPage('screenshots', this)">Screenshots</button>
+    <button class="nav-btn" onclick="showPage('video', this)">Demo Video</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-eyebrow">Full Stack Developer</div>
+        <h1 class="hero-name">Karthick<span>.</span></h1>
+        <div class="hero-title">// Building the Web, Front to Back</div>
+        <p class="hero-desc">
+          Passionate Full Stack Developer specializing in modern web applications,
+          admin dashboards, and complete business solutions — from pixel-perfect UIs
+          to scalable backend systems.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showPage('screenshots', document.querySelectorAll('.nav-btn')[1])">View My Work</button>
+          <button class="btn-outline" onclick="showPage('video', document.querySelectorAll('.nav-btn')[2])">Watch Demo</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-preview-card">
+          <img src="1781024485731_Screenshot_2026-06-09_160043.png" alt="Royal Spice Dashboard"/>
+        </div>
+        <div class="hero-badge">⚡ Royal Spice — Live Project</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider"/>
+
+  <!-- STATS -->
+  <div class="stats-row" style="max-width:1100px;margin:0 auto;">
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Featured Project</div></div>
+    <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Tech Skills</div></div>
+    <div class="stat"><div class="stat-num">Full</div><div class="stat-label">Stack Coverage</div></div>
+    <div class="stat"><div class="stat-num">✓</div><div class="stat-label">Available Now</div></div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- ABOUT -->
+  <div class="section">
+    <div class="section-label">About Me</div>
+    <h2 class="section-title">Who I Am</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <p style="color:var(--muted);line-height:1.8;font-size:0.97rem;margin-bottom:20px;">
+          Hi, I'm <strong style="color:var(--white)">Karthick</strong> — a Full Stack Developer dedicated to transforming ideas
+          into powerful digital solutions. I specialize in both frontend and backend development,
+          creating secure, responsive, and scalable applications using modern technologies.
+        </p>
+        <p style="color:var(--muted);line-height:1.8;font-size:0.97rem;">
+          I enjoy solving real-world problems through technology and continuously improving my
+          skills to stay updated with the latest development trends. My recent project —
+          <strong style="color:var(--gold)">Royal Spice</strong> — is a full-featured luxury restaurant
+          management platform with real-time ordering, payment integration, admin dashboards,
+          room booking, and delivery tracking.
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--muted)">Frontend</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold)">React.js / Next.js</span>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--muted)">Backend</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold)">Node.js / Express.js</span>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--muted)">Database</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold)">MongoDB / PostgreSQL</span>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--muted)">Payment</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold)">Razorpay Integration</span>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.85rem;color:var(--muted)">Deployment</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--gold)">Vercel / Render</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- SKILLS -->
+  <div class="section">
+    <div class="section-label">Technical Skills</div>
+    <h2 class="section-title">What I Work With</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-title">Frontend</div>
+        <div class="skill-tags">
+          <span class="tag">HTML5</span><span class="tag">CSS3</span><span class="tag">JavaScript</span>
+          <span class="tag">React.js</span><span class="tag">Next.js</span><span class="tag">Tailwind CSS</span>
+          <span class="tag">Bootstrap</span><span class="tag">Figma</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-title">Backend</div>
+        <div class="skill-tags">
+          <span class="tag">Node.js</span><span class="tag">Express.js</span><span class="tag">REST API</span>
+          <span class="tag">JWT Auth</span><span class="tag">Firebase</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-title">Database</div>
+        <div class="skill-tags">
+          <span class="tag">MongoDB</span><span class="tag">PostgreSQL</span><span class="tag">MySQL</span>
+          <span class="tag">Firestore</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-title">Tools & Platforms</div>
+        <div class="skill-tags">
+          <span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">VS Code</span>
+          <span class="tag">Docker</span><span class="tag">Postman</span><span class="tag">AWS</span>
+          <span class="tag">Vercel</span><span class="tag">Netlify</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- SERVICES -->
+  <div class="section">
+    <div class="section-label">What I Offer</div>
+    <h2 class="section-title">Services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🌐</div>
+        <div class="service-name">Full Stack Development</div>
+        <div class="service-desc">End-to-end web apps built with React, Node.js, and modern databases.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <div class="service-name">React.js Frontend</div>
+        <div class="service-desc">Pixel-perfect, responsive UIs with smooth interactions.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛠</div>
+        <div class="service-name">Node.js Backend</div>
+        <div class="service-desc">Secure REST APIs, authentication, and server-side logic.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <div class="service-name">Admin Dashboards</div>
+        <div class="service-desc">Full-featured control panels with analytics and management tools.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <div class="service-name">E-Commerce Solutions</div>
+        <div class="service-desc">Online stores with cart, checkout, and payment gateway integration.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔌</div>
+        <div class="service-name">API Integration</div>
+        <div class="service-desc">Connect 3rd-party services, payment gateways, and more.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🐛</div>
+        <div class="service-name">Bug Fixing & Maintenance</div>
+        <div class="service-desc">Debug, optimize, and maintain existing web applications.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🚀</div>
+        <div class="service-name">Deployment & Hosting</div>
+        <div class="service-desc">Deploy to Vercel, Render, Netlify, or AWS with CI/CD setup.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Banner -->
+  <div class="section" style="padding-top:0">
+    <div class="available-banner">
+      <div class="avail-left">
+        <div class="avail-dot"></div>
+        <div>
+          <div class="avail-title">Available for Freelance Work</div>
+          <div class="avail-sub">Open to projects, startups, and long-term development support</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="showPage('screenshots', document.querySelectorAll('.nav-btn')[1])">See My Work →</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SCREENSHOTS PAGE
+══════════════════════════════════════ -->
+<div id="page-screenshots" class="page">
+  <div class="ss-page">
+    <div class="ss-intro">
+      <div class="section-label">Project Showcase</div>
+      <h2 class="section-title" style="margin-bottom:12px;">Royal Spice — Screenshots</h2>
+      <p style="color:var(--muted);font-size:0.92rem;max-width:600px;line-height:1.7;">
+        A full-featured luxury restaurant management platform with ordering, reservations,
+        room booking, payment processing, and a comprehensive admin control center.
+      </p>
+    </div>
+
+    <div class="ss-grid" id="screenshotsGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     VIDEO PAGE
+══════════════════════════════════════ -->
+<div id="page-video" class="page">
+  <div class="video-page">
+    <div class="section-label">Project Walkthrough</div>
+    <h2 class="section-title" style="margin-bottom:12px;">Demo Video</h2>
+    <p style="color:var(--muted);font-size:0.92rem;margin-bottom:36px;line-height:1.7;max-width:600px;">
+      A complete walkthrough of Royal Spice — from the user-facing dining experience
+      to the full admin control center.
+    </p>
+
+    <div class="video-wrapper">
+      <video controls poster="1781024485731_Screenshot_2026-06-09_160043.png">
+        <source src="/fiverrvid.mp4" type="video/mp4"/>
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="feature-list">
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Hero Landing Page</strong>Luxury restaurant homepage with animated hero section</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Signature Menu</strong>Filterable menu with categories, images, and Add to Cart</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Cart & Checkout</strong>Luxury cart with Razorpay payment gateway integration</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Order Tracking</strong>Real-time order status — Preparing → Cooking → Delivery</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Room Booking</strong>Deluxe & Premium suite booking with check-in/out dates</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Table Reservation</strong>Reservation system with confirmation and refund options</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Admin Dashboard</strong>Control center with revenue analytics and sales charts</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        <div class="feature-text"><strong>Delivery Map</strong>Interactive Google Maps delivery tracking integration</div>
+      </div>
+    </div>
+
+    <div class="available-banner" style="margin-top:48px;">
+      <div class="avail-left">
+        <div class="avail-dot"></div>
+        <div>
+          <div class="avail-title">Want Something Like This?</div>
+          <div class="avail-sub">I can build a custom solution tailored to your business</div>
+        </div>
+      </div>
+      <a href="https://www.fiverr.com" target="_blank" style="text-decoration:none;">
+        <button class="btn-primary">Hire Me on Fiverr →</button>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightboxBtn()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1);event.stopPropagation()">‹</button>
+  <img id="lightboxImg" src="" alt=""/>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1);event.stopPropagation()">›</button>
+</div>
+
+<script>
+  // Page navigation
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (btn) btn.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Screenshot data
+  const screenshots = [
+    { file: '1781024485732_Screenshot_2026-06-08_175449.png', label: 'Landing Page', title: 'Hero — Taste the Luxury of Fine Dining' },
+    { file: '1781024485732_Screenshot_2026-06-08_175953.png', label: 'Menu', title: 'Our Signature Menu — Category Filter' },
+    { file: '1781024485732_Screenshot_2026-06-08_180007.png', label: 'Menu', title: 'Full Menu Grid with Food Cards' },
+    { file: '1781024485733_Screenshot_2026-06-08_180234.png', label: 'Cart', title: 'Your Luxury Cart' },
+    { file: '1781024485733_Screenshot_2026-06-08_180319.png', label: 'Checkout', title: 'Secure Checkout — Razorpay Loading' },
+    { file: '1781024485733_Screenshot_2026-06-08_180351.png', label: 'Payment', title: 'Razorpay Payment Gateway' },
+    { file: '1781024485733_Screenshot_2026-06-08_180356.png', label: 'Payment', title: 'Payment Successful Confirmation' },
+    { file: '1781024485734_Screenshot_2026-06-08_180419.png', label: 'Rooms', title: 'Luxury Rooms — Deluxe & Premium Suites' },
+    { file: '1781024485727_Screenshot_2026-06-08_180820.png', label: 'Admin Login', title: 'Admin Login Panel' },
+    { file: '1781024485728_Screenshot_2026-06-08_202700.png', label: 'Orders', title: 'Customer Orders with Status Tracker' },
+    { file: '1781024485729_Screenshot_2026-06-09_155715.png', label: 'Admin', title: 'Royal Spice Control Center — Dashboard' },
+    { file: '1781024485729_Screenshot_2026-06-09_155728.png', label: 'Admin', title: 'Admin — Menu Items Management' },
+    { file: '1781024485730_Screenshot_2026-06-09_155740.png', label: 'Admin', title: 'Admin — Customer Orders Panel' },
+    { file: '1781024485730_Screenshot_2026-06-09_155759.png', label: 'Admin', title: 'Admin — Luxury Reservations' },
+    { file: '1781024485731_Screenshot_2026-06-09_155821.png', label: 'Admin', title: 'Admin — Room Bookings Management' },
+    { file: '1781024485731_Screenshot_2026-06-09_160001.png', label: 'Contact', title: 'Contact & Google Maps Integration' },
+    { file: '1781024485731_Screenshot_2026-06-09_160043.png', label: 'Dashboard', title: 'Revenue Analytics & Sales Overview' },
+    { file: '1781024485734_Screenshot_2026-06-08_180503.png', label: 'Code', title: 'Frontend Codebase — React.js' },
+    { file: '1781024485734_Screenshot_2026-06-08_180536.png', label: 'Code', title: 'Backend Codebase — Node.js / Express.js' },
+  ];
+
+  // Render screenshot cards
+  const grid = document.getElementById('screenshotsGrid');
+  screenshots.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'ss-card';
+    card.innerHTML = `
+      <div class="ss-img-wrap">
+        <img src="${s.file}" alt="${s.title}" loading="lazy"/>
+        <div class="ss-overlay"><span class="ss-zoom">🔍</span></div>
+      </div>
+      <div class="ss-info">
+        <div class="ss-label">${s.label}</div>
+        <div class="ss-title">${s.title}</div>
+      </div>`;
+    card.onclick = () => openLightbox(i);
+    grid.appendChild(card);
+  });
+
+  // Lightbox
+  let currentIdx = 0;
+  function openLightbox(i) {
+    currentIdx = i;
+    document.getElementById('lightboxImg').src = screenshots[i].file;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightboxBtn() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeLightbox(e) {
+    if (e.target === document.getElementById('lightbox')) closeLightboxBtn();
+  }
+  function lightboxNav(dir) {
+    currentIdx = (currentIdx + dir + screenshots.length) % screenshots.length;
+    document.getElementById('lightboxImg').src = screenshots[currentIdx].file;
+  }
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightboxBtn();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  });
+</script>
+</body>
+</html>
